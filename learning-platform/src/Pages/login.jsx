@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+
 import poster from '../Utils/poster.png'; // Replace with your image path
 
 const Login = () => {
@@ -26,8 +28,16 @@ const Login = () => {
                 type="email"
                 id="email"
                 placeholder="Email"
-                className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500"
               />
+
+              <label htmlFor='password' className='mt-3 block text-sm font-medium text-gray-700'>
+              Password
+              </label>
+              <input type="password"
+              id='password'
+              placeholder='Password'
+              className='w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-purple-500 focus:border-purple-500' />
             </div>
 
             {/* Log in with email button */}
@@ -39,14 +49,18 @@ const Login = () => {
               <i className="fas fa-envelope mr-2"></i>
               Login
             </button>
+           
            </div>
+           <p className='flex justify-center'> or
+              <Link className='text-purple-700 underline font-bold ml-1' to={'/forget-password'}> Forget Password</Link>
+            </p>
           </form>
 
           {/* Divider with "Other log in options" */}
           <div className="flex items-center justify-evenly space-x-2 my-6">
-            <span className="w-full h-px bg-gray-300"></span>
-            <span className="text-sm text-gray-500">Other log in options</span>
-            <span className="w-full h-px bg-gray-300"></span>
+            <span className="w-3/4 h-px bg-gray-300"></span>
+            <span className=" w-full text-sm text-gray-500">Other log in options</span>
+            <span className="w-3/4 h-px bg-gray-300"></span>
           </div>
 
           {/* Social Logins */}
@@ -66,15 +80,10 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="/signup" className="text-purple-600 hover:underline">
-                Sign up
-              </a>
+              <Link className="text-purple-500 hover:underline font-bold" to={'/signup'}> Sign Up</Link>
+              
             </p>
-            <p className="mt-2">
-              <a href="#" className="text-purple-600 hover:underline">
-                Log in with your organization
-              </a>
-            </p>
+  
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ const Home= lazy(()=> import('../Pages/home'));
 const Login= lazy(()=> import('../Pages/login'));
 const SignUp= lazy(()=> import('../Pages/signup'));
 const Course= lazy(()=> import('../Pages/courseDescription'));
+const ForgetPassword = lazy(()=> import('../Pages/forgotPassword'));
 
 
 const AppRoutes = () => {
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path='login' element={<Login/>}/>
         <Route path='signup' element={<SignUp/>}/>
         <Route path='course' element={<Course/>}/>
+        <Route path='forget-password' element={<ForgetPassword/>}/>
         </Routes>
     </Suspense>
    
