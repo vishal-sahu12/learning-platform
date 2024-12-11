@@ -24,7 +24,7 @@ const AppRoutes = () => {
         <Route path='home' element={<Home/>}/>
         <Route path='login' element={<Login/>}/>
         <Route path='signup' element={<SignUp/>}/>
-        <Route path='course' element={<Course/>}/>
+        <Route path='/course/:id' element={<Course/>}/>
         <Route path='forget-password' element={<ForgetPassword/>}/>
         <Route path='setting' element={<Setting/>}/>
         <Route path='profile' element={<Profile/>}/>

@@ -27,17 +27,25 @@ const Login = () => {
           headers: {
             'Content-Type': 'application/json'
           }
+          
+
         });
 
         if (response.status === 200) {
-          const data = response.data;
+          console.log(response);
+          
+          const userData = response.data.UserInfo;
+         
+          
+       
+          
           // Store the token in local storage
-          localStorage.setItem('token',data.token);
-        
-          toast.success('Login successful!', {
-            position: 'top-right'
-          });
-          console.log('Login successful:', data);
+          localStorage.setItem('user', JSON.stringify(userData));
+          
+          // toast.success('Login successful!', {
+          //   position: 'top-right'
+          // });
+          // console.log('Login successful:',userData );
           navigate('/home');
         }
       } catch (error) {

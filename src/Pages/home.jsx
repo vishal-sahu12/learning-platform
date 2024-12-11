@@ -19,16 +19,29 @@ function Home() {
   const [activeCategory, setActiveCategory] = useState(courseData.courses[0]);
   const [activeSubCategory, setActiveSubCategory] = useState(courseData.courses[0].courses[0]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('user');
     // const savedUsername = localStorage.getItem('username');
     
     if (token) {
       setIsLoggedIn(true);
+      const userObject = JSON.parse(token);
+      const fullName = userObject.UserName;
+
+// Split the full name to get the first name
+    const firstName = fullName.split(' ')[0];
+      setUsername(firstName);
+      
+      
+      
+      
+      
+      // console.log(token.UserInfo);
+      
       // setUsername(savedUsername);
     }
 
@@ -72,7 +85,7 @@ function Home() {
   const fetchData = async() =>{
     try {
       const imgUrl = await axios.get("https://img-b.udemycdn.com/course/480x270/2776760_f176_10.jpg");
-      console.log('Success:', imgUrl.data);
+
       localStorage.setItem('imgUrl',imgUrl.data);
     } catch (error) {
       console.error('Error:', error);
@@ -89,7 +102,7 @@ function Home() {
   };
 
   return (
-    <div className="HomePage">
+    <div className="min-h-screen bg-background text-text">
       <header className='flex items-center h-20 space-x-4 w-full bg-gray-500 justify-between px-4 sm:px-8'>
         <div className='w-2/12'>
           <img className='w-16 sm:w-20' src={logo} alt="logo" />
@@ -106,7 +119,7 @@ function Home() {
                 onClick={handleDropdownToggle}
                 className="w-24 h-12 bg-white flex justify-center items-center rounded-md text-black hover:text-white hover:bg-black"
               >
-                Vishal
+                {username}
               </button>
               {dropdownOpen && (
                 <div className="absolute bg-white border border-gray-300 w-48 mt-1 rounded-lg shadow-lg z-50">
@@ -177,15 +190,25 @@ function Home() {
           ))}
         </div>
 
-        {/* Subcourses Grid */}
-        <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5'>
-          {activeSubCategory.subCourses.map((subCourse, index) => (
-            <Link key={index} to={'/courses/'+subCourse.name} >
-                <Course title={subCourse.name} description={subCourse.description} price={subCourse.price} img_url={poster}/>
-            </Link>
-           
-          ))}
-        </div>
+      <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5'>
+       {activeSubCategory.subCourses.map((subCourse, index) => (
+    <Link
+      key={index}
+      to={`/course/${subCourse.name}`} // Assuming each subCourse has a unique 'id'
+      state={{ subCourse }} // Pass subCourse data to the route
+      className='block'
+    >
+      <div className='bg-var(--card) p-4 border border-var(--border) rounded-lg shadow-lg hover:shadow-xl transition-shadow'>
+        <img src={poster} alt={subCourse.name} className='w-full h-40 object-cover mb-3 rounded-lg' />
+        <h3 className='text-xl font-bold'>{subCourse.name}</h3>
+        <p className='text-var(--text-muted) mb-2'>{subCourse.description}</p>
+        <p className='text-var(--text-muted) mb-1'>Duration: {subCourse.duration}</p>
+        <p className='text-var(--text-muted)'>Price: {subCourse.price}</p>
+      </div>
+    </Link>
+  ))}
+</div>
+
 
         {/* Another Subcategory Section */}
         {courseData.courses.map((category, index) => (

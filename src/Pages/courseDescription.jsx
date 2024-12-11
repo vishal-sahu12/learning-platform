@@ -1,17 +1,16 @@
 import React, { useRef } from "react";
+import { useLocation } from 'react-router-dom';
 import './colors.css'
 const CourseDescription = () => {
   const videoRef = useRef(null);
 
-  // Play video handler
-  const handlePlay = () => {
-    videoRef.current?.play();
-  };
+  const location = useLocation();
+  const { subCourse } = location.state || {};
 
-  // Pause video handler
-  const handlePause = () => {
-    videoRef.current?.pause();
-  };
+  if (!subCourse) {
+    return <div>Course details not found!</div>;
+  }
+
 
   return (
     <div className="p-8" style={{ backgroundColor: "var(--background-color)", color: "var(--text-color)" }}>
@@ -19,10 +18,11 @@ const CourseDescription = () => {
       <div className="flex justify-evenly mb-10">
         {/* Left Side */}
         <div className="w-3/5">
-          <h1 className="text-3xl font-bold mb-4">The Complete 2024 Web Development Bootcamp</h1>
+          <h1 className="text-3xl font-bold mb-4">{subCourse.name}</h1>
           <p className="text-xl mb-4">
-            Become a Full-Stack Web Developer with just ONE course. HTML, CSS, JavaScript, Node, React, PostgreSQL, Web3, and DApps.
+            {subCourse.description}
           </p>
+          <h3>{subCourse.duration}</h3>
           <div className="flex items-center mb-4">
             <span className="font-bold text-xl mr-2" style={{ color: "var(--highlight-color)" }}>4.7</span>
             <span style={{ color: "var(--subtext-color)" }}>(402,262 ratings) • 1,339,358 students</span>
