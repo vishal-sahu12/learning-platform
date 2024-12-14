@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'; // Assuming you're using toast for notif
 import poster from '../Utils/poster.png'; // Replace with your image path
 
 const Login = () => {
-  const navigate = useNavigate(); // Assuming you're using react-router for navigation
+  const navigate = useNavigate(); // 
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Email is required.'),

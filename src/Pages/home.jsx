@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Course from '../component/Course';
 import axios from 'axios';
-
+import "./colors.css";
 const banners = [
   { id: 1, image: poster },
   { id: 2, image: poster },
@@ -103,8 +103,8 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-background text-text">
-      <header className='flex items-center h-20 space-x-4 w-full bg-gray-500 justify-between px-4 sm:px-8'>
-        <div className='w-2/12'>
+      <header className='flex items-center h-20 space-x-4 w-full justify-between px-4 sm:px-8'>
+        <div className='w-2/12 '>
           <img className='w-16 sm:w-20' src={logo} alt="logo" />
         </div>
         <div className='w-7/12'>
@@ -117,18 +117,18 @@ function Home() {
             <div className="relative">
               <button
                 onClick={handleDropdownToggle}
-                className="w-24 h-12 bg-white flex justify-center items-center rounded-md text-black hover:text-white hover:bg-black"
+                className="w-24 h-12 bg-white flex justify-center items-center rounded-md text-black hover:text-white hover:bg-red-500"
               >
                 {username}
               </button>
               {dropdownOpen && (
-                <div className="absolute bg-white border border-gray-300 w-48 mt-1 rounded-lg shadow-lg z-50">
+                <div className="absolute bg-background border border-gray-300 w-48 mt-1 rounded-lg shadow-lg z-50">
                   <ul>
-                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleDropdownItemClick('/profile')}>Profile</li>
-                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleDropdownItemClick('/change-password')}>Change Password</li>
-                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleDropdownItemClick('/setting')}>Settings</li>
-                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleDropdownItemClick('/bought-courses')}>Bought Courses</li>
-                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Logout</li>
+                    <li className="px-4 py-2 hover:bg-red-600 cursor-pointer" onClick={() => handleDropdownItemClick('/profile')}>Profile</li>
+                    <li className="px-4 py-2 hover:bg-red-600 cursor-pointer" onClick={() => handleDropdownItemClick('/change-password')}>Change Password</li>
+                    <li className="px-4 py-2 hover:bg-red-600 cursor-pointer" onClick={() => handleDropdownItemClick('/setting')}>Settings</li>
+                    <li className="px-4 py-2 hover:bg-red-600 cursor-pointer" onClick={() => handleDropdownItemClick('/bought-courses')}>Bought Courses</li>
+                    <li className="px-4 py-2 hover:bg-red-600 cursor-pointer" onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
               )}
@@ -163,12 +163,12 @@ function Home() {
         <h3 className='text-xl sm:text-2xl ml-4 px-4 sm:px-10'>Here You get Design, Finance, Tech Related Courses</h3>
 
         {/* Categories */}
-        <div className='bg-white w-full h-10 mt-10 overflow-x-auto'>
+        <div className='bg-background  w-full h-10 mt-10 overflow-x-auto'>
           <div className='flex'>
             {courseData.courses.map((category, index) => (
               <button
                 key={index}
-                className={`text-lg sm:text-3xl mr-5 px-5 sm:px-14 ${activeCategory.category === category.category ? 'text-black' : 'text-gray-400'} hover:text-black`}
+                className={`text-lg text-white sm:text-3xl border mr-5 px-5 sm:px-14 ${activeCategory.category === category.category ? 'text-black' : 'text-gray-400'} hover:text-black`}
                 onClick={() => handleCategoryClick(category)}
               >
                 {category.category}

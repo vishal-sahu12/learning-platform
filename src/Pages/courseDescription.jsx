@@ -1,16 +1,73 @@
 import React, { useRef } from "react";
-import { useLocation } from 'react-router-dom';
-import './colors.css'
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import "./colors.css";
+
 const CourseDescription = () => {
   const videoRef = useRef(null);
-
   const location = useLocation();
   const { subCourse } = location.state || {};
+
+  const handleBuyNow = async () => {
+    if (!subCourse) {
+      alert("Course details not found!");
+      return;
+    }
+
+    const headers = localStorage.getItem('token')
+    console.log(headers)
+
+    try {
+      // 1. Send POST request to backend
+      const response = await axios.post("http://localhost:3000/payment/initiate-payment",  {
+        userId: 4, // Replace with actual userId
+        courseId: 4, // Assuming subCourse has an `id` property
+      });
+
+      const paymentData = response.data;
+
+      // 2. Initialize Razorpay options
+      const options = {
+        key: paymentData.key,
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+        name: paymentData.name,
+        description: paymentData.description,
+        image: paymentData.image,
+        order_id: paymentData.order_id,
+        callback_url: paymentData.callback_url,
+        prefill: paymentData.prefill,
+        theme: paymentData.theme,
+        handler: function (paymentResponse) {
+          // 3. Handle payment success
+          console.log("Payment successful!", paymentResponse);
+
+          // Optionally, verify payment on your backend
+          axios.post("https://your-backend-url.com/api/payment/verify", {
+            ...paymentResponse,
+            courseId: subCourse.id,
+            userId: 8, // Replace with actual userId
+          });
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Payment modal dismissed.");
+          },
+        },
+      };
+
+      // 3. Open Razorpay payment modal
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      alert("Unable to process payment. Please try again later.");
+    }
+  };
 
   if (!subCourse) {
     return <div>Course details not found!</div>;
   }
-
 
   return (
     <div className="p-8" style={{ backgroundColor: "var(--background-color)", color: "var(--text-color)" }}>
@@ -19,9 +76,7 @@ const CourseDescription = () => {
         {/* Left Side */}
         <div className="w-3/5">
           <h1 className="text-3xl font-bold mb-4">{subCourse.name}</h1>
-          <p className="text-xl mb-4">
-            {subCourse.description}
-          </p>
+          <p className="text-xl mb-4">{subCourse.description}</p>
           <h3>{subCourse.duration}</h3>
           <div className="flex items-center mb-4">
             <span className="font-bold text-xl mr-2" style={{ color: "var(--highlight-color)" }}>4.7</span>
@@ -95,8 +150,12 @@ const CourseDescription = () => {
           <p className="text-2xl mb-2" style={{ color: "var(--line-through-color)", textDecoration: "line-through" }}>₹3,099</p>
           <p className="text-3xl font-bold mt-4" style={{ color: "var(--text-color)" }}>₹499</p>
           <p className="mb-6" style={{ color: "var(--discount-color)" }}>84% off • 2 days left at this price!</p>
-          <button className="px-6 py-3 rounded-md font-semibold mb-4" style={{ backgroundColor: "var(--button-bg)", color: "var(--text-color)" }}>
-            Add to cart
+          <button
+            className="px-6 py-3 rounded-md font-semibold mb-4"
+            style={{ backgroundColor: "var(--button-bg)", color: "var(--text-color)" }}
+            onClick={handleBuyNow}
+          >
+            Buy Now
           </button>
         </div>
       </div>

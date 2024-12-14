@@ -13,6 +13,7 @@ const Setting= lazy(()=> import('../MenuPages/Setting'));
 const Profile= lazy(()=> import('../MenuPages/Profile'));
 const ChangePassword= lazy(()=> import('../MenuPages/ChangePassword'));
 const BroughtCourses= lazy(()=> import('../MenuPages/BroughtCourses'));
+const BuyingCourse = lazy(()=>import('../Pages/buyingCourse'));
 
 
 
@@ -30,7 +31,7 @@ const AppRoutes = () => {
         <Route path='profile' element={<Profile/>}/>
         <Route path='courses' element={<BroughtCourses/>}/>
         <Route path='change-password' element={<ChangePassword/>}/>
-        <Route path='description' element={<Description/>}/>
+        <Route path='bu' element={<Description/>}/>
 
 
         </Routes>
