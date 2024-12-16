@@ -1,14 +1,49 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios'; // Import axios
-import { toast } from 'react-toastify'; // Assuming you're using toast for notifications
-
-import poster from '../Utils/poster.png'; // Replace with your image path
+import { toast } from 'react-toastify';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'; // Import Redux hooks
+import poster from '../Utils/poster.png';
+import { setLoginAct, setLoggedInUserAct } from "../store/auth/authslice";
+import { loginUserAct, getLoggedInuserAct } from "../store/auth/auththunk";
+import { generateApiUrl } from "../api/apihealper";
+import { setLocalStorage, getLocalStorage } from "../Utils/storageutility";
+import { refreshTokenKey, accessTokenKey } from "../constants/storageconstants";
 
 const Login = () => {
-  const navigate = useNavigate(); // 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loginResp, loggedInUserResp, authErrorResp } = useSelector(({ auth }) => ({
+    loginResp: auth.loginResp,
+    loggedInUserResp: auth.loggedInUserResp,
+    authErrorResp: auth.authErrorResp
+  }), shallowEqual); 
+
+  const loginRespRef = useRef({
+    prevLoginResp: loginResp,
+    prevLoggedInUserResp: loggedInUserResp
+  })
+
+  useEffect(() => {
+    const { prevLoginResp, prevLoggedInUserResp } = loginRespRef.current;
+
+    if (loginResp && loginResp !== prevLoginResp) {
+      const { token } = loginResp;
+      setLocalStorage(accessTokenKey, token);
+      setLocalStorage(refreshTokenKey, token);
+      dispatch(getLoggedInuserAct(generateApiUrl("loggedin_user")));
+      navigate('/dashboard');
+    }
+
+    if (loggedInUserResp && loggedInUserResp !== prevLoggedInUserResp) {
+      dispatch(setLoggedInUserAct(undefined));
+      navigate('/dashboard');
+    }
+
+    loginRespRef.current.prevLoginResp = loginResp;
+    loginRespRef.current.prevLoggedInUserResp = loggedInUserResp;
+  }, [loginResp, loggedInUserResp, dispatch, navigate]);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Email is required.'),
@@ -22,44 +57,8 @@ const Login = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      try {
-        const response = await axios.post('http://localhost:3000/users/login', values, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          
-
-        });
-
-        if (response.status === 200) {
-          console.log(response);
-          
-          const userData = response.data.UserInfo;
-         
-          
-       
-          
-          // Store the token in local storage
-          localStorage.setItem('user', JSON.stringify(userData));
-          
-          // toast.success('Login successful!', {
-          //   position: 'top-right'
-          // });
-          // console.log('Login successful:',userData );
-          navigate('/home');
-        }
-      } catch (error) {
-        if (error.response && error.response.data) {
-          toast.error(`Error: ${error.response.data.message || 'Username or Password is incorrect'}`, {
-            position: 'top-right'
-          });
-        } else {
-          console.error('Error during login:', error);
-          toast.error('Network error. Please try again later.', {
-            position: 'top-right'
-          });
-        }
-      }
+      // Dispatch the login thunk
+      dispatch(loginUserAct(generateApiUrl("login"), values));
     }
   });
 
@@ -78,7 +77,6 @@ const Login = () => {
           </h2>
 
           <form className="space-y-4" onSubmit={formik.handleSubmit}>
-            {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
@@ -93,9 +91,9 @@ const Login = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.email && formik.errors.email ? (
+              {formik.touched.email && formik.errors.email && (
                 <div className="text-red-500 text-sm">{formik.errors.email}</div>
-              ) : null}
+              )}
 
               <label htmlFor="password" className="mt-3 block text-sm font-medium text-gray-700">
                 Password
@@ -110,9 +108,9 @@ const Login = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.password && formik.errors.password ? (
+              {formik.touched.password && formik.errors.password && (
                 <div className="text-red-500 text-sm">{formik.errors.password}</div>
-              ) : null}
+              )}
             </div>
 
             {/* Log in button */}
@@ -121,43 +119,17 @@ const Login = () => {
                 type="submit"
                 className="w-1/2 bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition"
               >
-                <i className="fas fa-envelope mr-2"></i>
                 Login
               </button>
             </div>
 
-            <p className="flex justify-center">or
-              <Link className="text-purple-700 underline font-bold ml-1" to="/forget-password">Forget Password</Link>
+            <p className="flex justify-center">
+              or
+              <Link className="text-purple-700 underline font-bold ml-1" to="/forget-password">
+                Forget Password
+              </Link>
             </p>
           </form>
-
-          {/* Divider with "Other log in options" */}
-          <div className="flex items-center justify-evenly space-x-2 my-6">
-            <span className="w-3/4 h-px bg-gray-300"></span>
-            <span className="w-full text-sm text-gray-500">Other log in options</span>
-            <span className="w-3/4 h-px bg-gray-300"></span>
-          </div>
-
-          {/* Social Logins */}
-          <div className="flex justify-center space-x-4">
-            <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-full hover:bg-gray-100">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google" className="w-5 h-5" />
-            </button>
-            <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-full hover:bg-gray-100">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" className="w-5 h-5" />
-            </button>
-            <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-full hover:bg-gray-100">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Links */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link className="text-purple-500 hover:underline font-bold" to="/signup">Sign Up</Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

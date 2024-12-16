@@ -6,14 +6,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background-color)",
-        card: "var(--card-background)",
-        text: "var(--text-color)",
-        subtext: "var(--subtext-color)",
-        highlight: "var(--highlight-color)",
-        button: "var(--button-bg)",
-        "button-hover": "var(--button-hover-bg)",
-        footer: "var(--footer-bg)",
+        'background-color': '#1a202c', // Dark gray
+        'card-background': '#2d3748', // Medium gray
+        'text-color': '#ffffff', // White
+        'subtext-color': '#a0aec0', // Light gray
+        'highlight-color': '#ecc94b', // Yellow
+        'button-bg': '#805ad5', // Purple
+        'button-hover-bg': '#6b46c1', // Darker purple
+        'footer-bg': '#2d3748', // Footer gray
       },
     },
   },
