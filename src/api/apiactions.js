@@ -1,6 +1,6 @@
 import axios, { Axios, AxiosError, AxiosResponse } from "axios"
 import { requestInterceptor, responseInterceptorSuccess, responseInterceptor } from "./interceptor";
-import { sanitizeQueryParams } from "../utils/commonutilities";
+import { sanitizeQueryParams } from "../Utils/commonutilities";
 axios.defaults.baseURL = "http://localhost:3000";
 
 axios.interceptors.request.use(
@@ -29,7 +29,9 @@ export async function getData(apiUrl, params = {}, optionalConfig = {}) {
 
 export async function postData(apiUrl, payload = {}, optionalConfig = {}) {
     try {
+        console.log("Payload being sent:", payload);
         return await axios.post(apiUrl, payload, optionalConfig);
+        
     }
     catch (error) {
         return checkErrorResponse(error, optionalConfig);

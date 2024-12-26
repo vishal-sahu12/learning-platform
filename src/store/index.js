@@ -27,4 +27,9 @@ const store = configureStore({
 
 export default store;
 
+// Debugging
+store.subscribe(() => {
+    // console.log('State after action:', store.getState());
+});
+
 export const persistor = persistStore(store);

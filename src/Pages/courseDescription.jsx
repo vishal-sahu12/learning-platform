@@ -6,7 +6,7 @@ import "./colors.css";
 const CourseDescription = () => {
   const videoRef = useRef(null);
   const location = useLocation();
-  const { subCourse } = location.state || {};
+  const { course: subCourse } = location.state || {};
 
   const handleBuyNow = async () => {
     if (!subCourse) {

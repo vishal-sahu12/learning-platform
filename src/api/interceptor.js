@@ -1,6 +1,6 @@
 import { getLocalStorage } from "../Utils/storageutility";
 import { accessTokenKey } from "../constants/storageconstants";
-import { setApiCallLoadingAct } from "../store/globaldata/globalslicer";
+import { setApiCallLoadingAct } from "../store/globaldata/globalslice";
 import store from "../store";
 const apiCallSet = new Set();
 

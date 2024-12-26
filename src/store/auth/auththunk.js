@@ -1,34 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { getData, postData } from "../../api/apiactions";
 
-const initialState = {
-    loginResp: undefined,
-    loggedInUserResp: undefined,
-    authErrorResp: undefined,
+import {
+    setLoginAct, setLoggedInUserAct, setAuthErrorAct
+} from "./authslice";
+
+export function loginUserAct(apiUrl, payload) {
+    return async (dispatch) => {
+        const response = await postData(apiUrl, payload);
+        console.log(response)
+        if (response.status === 200) {
+            dispatch(setLoginAct(response.data));
+        } else {
+            dispatch(setAuthErrorAct(response));
+        }
+    }
 }
 
-export const authSlice = createSlice({
-    name: "auth",
-    initialState,
-    reducers: {
-        setLoginAct: (state, action) => {
-            state.loginResp = action.payload;
-        },
-        setLoggedInUserAct: (state, action) => {
-            state.loggedInUserResp = action.payload;
-        },
-        setAuthErrorAct: (state, action) => {
-            state.authErrorResp = action.payload;
-        },
-        setLogoutUserAct: (state) => {
-            state.loginResp = undefined;
-            state.loggedInUserResp = undefined;
-        },
-        setClearAuthAct: (state, action) => {
-            state.loginResp = undefined;
-            state.loggedInUserResp = undefined;
-        },
+export function getLoggedInuserAct(apiUrl) {
+    return async (dispatch) => {
+        const response = await getData(apiUrl);
+        if (response.status === 200) {
+            dispatch(setLoggedInUserAct(response.data));
+        } else {
+            dispatch(setAuthErrorAct(response));
+        }
     }
-})
+}
 
-export default authSlice.reducer;
-export const { setLoginAct, setLoggedInUserAct, setLogoutUserAct, setClearAuthAct, setAuthErrorAct } = authSlice.actions;
+
+
